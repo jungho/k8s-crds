@@ -10,7 +10,7 @@ We will first dive into Marko's example as it is simple and clear.  We will then
 
 ## Operator SDK ##
 
-# References #
+## References ##
 
 - [Kuberenetes Deep Dive Series by RedHat.  Excellent overview of the kube-apiserver, code generation for CRDs, and how state is stored in etcd](https://blog.openshift.com/kubernetes-deep-dive-api-server-part-1/)
 - [Writing Kubernetes Custom Controllers. Describes how to implement custom controllers using client-go.  Read this prior to diving into the sample-controller as it describes an established pattern for implementing controllers.](https://medium.com/@cloudark/kubernetes-custom-controllers-b6c7d0668fdf)
