@@ -1,9 +1,0 @@
-apiVersion: example.architech.ca/v1
-kind: WebSite
-metadata:
-  labels:
-    controller-tools.k8s.io: "1.0"
-  name: website-sample
-spec:
-  # Add fields here
-  foo: bar
