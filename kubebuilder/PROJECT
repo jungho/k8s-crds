@@ -1,0 +1,3 @@
+version: "1"
+domain: architech.ca
+repo: github.com/jungho/k8s-crds/kubebuilder
