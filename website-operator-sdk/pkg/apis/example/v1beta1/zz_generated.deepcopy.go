@@ -30,6 +30,7 @@ func (in *Website) DeepCopyInto(out *Website) {
 	out.TypeMeta = in.TypeMeta
 	in.ObjectMeta.DeepCopyInto(&out.ObjectMeta)
 	out.Spec = in.Spec
+	out.Status = in.Status
 	return
 }
 
