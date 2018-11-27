@@ -1,0 +1,13 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: websites.example.architech.ca
+spec:
+  group: example.architech.ca
+  names:
+    kind: Website
+    listKind: WebsiteList
+    plural: websites
+    singular: website
+  scope: Namespaced
+  version: v1beta1
