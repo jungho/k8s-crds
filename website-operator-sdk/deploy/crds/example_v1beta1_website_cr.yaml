@@ -4,4 +4,4 @@ metadata:
   name: example-website
 spec:
   # Add fields here
-  size: 3
+  gitRepo: https://github.com/luksa/kubia-website-example.git
