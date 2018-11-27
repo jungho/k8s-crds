@@ -8,7 +8,7 @@ The benefit of Operator SDK is that it generates lot of the scaffolding to make 
 operator-sdk new website-operator-sdk --skip-git-init
 ```
 
-This will create a directory called `website-operator` with the following directory structure (note, it won't create the README.md file which I added after I ran the command.):
+This will create a directory called `website-operator-sdk` with the following directory structure (note, it won't create the README.md file which I added after I ran the command.):
 
 ```sh
 [~/go/src/github.com/jungho/website-operator-sdk, master+1]: tree -L 1
