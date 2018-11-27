@@ -26,12 +26,20 @@ This will create a directory called `website-operator-sdk` with the following di
 6 directories, 3 files
 ```
 
+See [project layout](https://github.com/operator-framework/operator-sdk/blob/master/doc/project_layout.md) for description of each directory.
+
 ## Create the scaffolding for the Website CRD and Custom Controller
 
-To add the Website CRD and Controller cd into the website-controller directory and run the following command:
+To add the Website CRD, from the website-controller directory and run the following command:
 
 ```sh
 #You MUST run this within the website-controller-sdk project directory.  Otherwise it will fail.  
 #This is because the command expects to find the `cmd/manager/main.go` file. 
-operator-sdk add api --api-version=example.architech.ca/v1 --kind=Website
+operator-sdk add api --api-version=example.architech.ca/v1beta1 --kind=Website
+```
+
+Next, add the controller that will watch and reconsile Website resources:
+
+```sh
+operator-sdk add controller --api-version=example.architech.ca/v1beta1 --kind=Website
 ```
