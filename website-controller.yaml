@@ -30,3 +30,18 @@ spec:
         #To make it simple, it will proxy through to the api-server using kubectl
       - name: proxy
         image: luksa/kubectl-proxy:1.6.2
+---
+#Marko's example uses a NodePort service so
+#we are adding a LoadBalancer service
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia-website-lb
+spec:
+  type: LoadBalancer
+  selector:
+    webserver: kubia-website
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 80
