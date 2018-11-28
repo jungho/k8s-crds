@@ -5,6 +5,7 @@ import (
 
 	examplev1beta1 "github.com/jungho/k8s-crds/website-operator-sdk/pkg/apis/example/v1beta1"
 	appsv1 "k8s.io/api/apps/v1"
+	"k8s.io/api/core/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -135,7 +136,10 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 		"webserver": ws.Name,
 	}
 
-	//we are creating a Deployment resource that will be owned by our Website resource
+	/*
+		we are creating a Deployment resource that will be owned by our Website resource
+
+	*/
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      ws.Name + "-website",
@@ -144,6 +148,16 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 		},
 		Spec: appsv1.DeploymentSpec{
 			Replicas: &ws.Spec.Replicas,
+			Selector: &metav1.LabelSelector{
+				MatchLabels: labels,
+			},
+			Template: v1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:   ws.Name + "-website",
+					Labels: labels,
+				},
+				Spec: v1.PodSpec{},
+			},
 		},
 	}
 }

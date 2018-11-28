@@ -8,6 +8,7 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // WebsiteSpec defines the desired state of Website
+//In addition to the GitRepo field, I also add Replicas to specify how many replicas of websites to create
 type WebsiteSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
