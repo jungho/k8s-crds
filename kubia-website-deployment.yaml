@@ -1,0 +1,94 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: 2018-11-28T16:53:17Z
+  generation: 1
+  labels:
+    webserver: kubia-website
+  name: kubia-website
+  namespace: default
+  resourceVersion: "4912"
+  selfLink: /apis/extensions/v1beta1/namespaces/default/deployments/kubia-website
+  uid: 1aac0c6f-f32e-11e8-b9d3-080027853291
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      webserver: kubia-website
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        webserver: kubia-website
+      name: kubia-website
+    spec:
+      containers:
+      - image: nginx:alpine
+        imagePullPolicy: IfNotPresent
+        name: main
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: html
+          readOnly: true
+      - env:
+        - name: GIT_SYNC_REPO
+          value: https://github.com/luksa/kubia-website-example.git
+        - name: GIT_SYNC_DEST
+          value: /gitrepo
+        - name: GIT_SYNC_BRANCH
+          value: master
+        - name: GIT_SYNC_REV
+          value: FETCH_HEAD
+        - name: GIT_SYNC_WAIT
+          value: "10"
+        image: openweb/git-sync
+        imagePullPolicy: Always
+        name: git-sync
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /gitrepo
+          name: html
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: html
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: 2018-11-28T16:53:17Z
+    lastUpdateTime: 2018-11-28T16:53:17Z
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: 2018-11-28T16:53:17Z
+    lastUpdateTime: 2018-11-28T16:53:17Z
+    message: ReplicaSet "kubia-website-6b6447c9b" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
