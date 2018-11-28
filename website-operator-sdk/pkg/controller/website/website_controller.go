@@ -77,7 +77,7 @@ type ReconcileWebsite struct {
 }
 
 // Reconcile reads that state of the cluster for a Website object and makes changes based on the state read
-// and what is in the Website.Spec.  It will create a Deployment if one does not exist.
+// and what is in the Website.Spec.  It will create a Deployment and Service if they do not exist.
 //
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
@@ -134,8 +134,66 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 	}
 
 	/*
-		we are creating a Deployment resource that will be owned by our Website resource
+		We need to create Deployment resource that will be owned by our Website resource.
+		We need to model the following deployment resource using the Go types defined in
+		the k8s.io/api package which defines all the resource types.
 
+		apiVersion: apps/v1
+		kind: Deployment
+		metadata:
+		  labels:
+		    webserver: kubia-website
+		  name: kubia-website
+		  namespace: default
+		spec:
+		  replicas: 1
+		  selector:
+		    matchLabels:
+		      webserver: kubia-website
+		  strategy:
+		    rollingUpdate:
+		      maxSurge: 1
+		      maxUnavailable: 1
+		    type: RollingUpdate
+		  template:
+		    metadata:
+		      labels:
+		        webserver: kubia-website
+		      name: kubia-website
+		    spec:
+		      containers:
+		      - image: nginx:alpine
+		        imagePullPolicy: IfNotPresent
+		        name: main
+		        ports:
+		        - containerPort: 80
+		          protocol: TCP
+		        resources: {}
+		        volumeMounts:
+		        - mountPath: /usr/share/nginx/html
+		          name: html
+		          readOnly: true
+		      - env:
+		        - name: GIT_SYNC_REPO
+		          value: https://github.com/luksa/kubia-website-example.git
+		        - name: GIT_SYNC_DEST
+		          value: /gitrepo
+		        - name: GIT_SYNC_BRANCH
+		          value: master
+		        - name: GIT_SYNC_REV
+		          value: FETCH_HEAD
+		        - name: GIT_SYNC_WAIT
+		          value: "10"
+		        image: openweb/git-sync
+		        imagePullPolicy: Always
+		        name: git-sync
+		        resources: {}
+		        volumeMounts:
+		        - mountPath: /gitrepo
+		          name: html
+		      volumes:
+		      - emptyDir: {}
+		        name: html
 	*/
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -159,25 +217,24 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 	}
 }
 
-// newPodForCR returns a busybox pod with the same name/namespace as the cr
-func newPodForCR(cr *examplev1beta1.Website) *corev1.Pod {
-	labels := map[string]string{
-		"app": cr.Name,
-	}
-	return &corev1.Pod{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "-pod",
-			Namespace: cr.Namespace,
-			Labels:    labels,
-		},
-		Spec: corev1.PodSpec{
-			Containers: []corev1.Container{
-				{
-					Name:    "busybox",
-					Image:   "busybox",
-					Command: []string{"sleep", "3600"},
-				},
-			},
-		},
-	}
+// returns a Service that will manage a set of Pods owned by the Website custom resource
+func newServiceForWebsite(ws *examplev1beta1.Website) *corev1.Service {
+	/*
+		apiVersion: v1
+		kind: Service
+		metadata:
+		  name: kubia-website-lb
+		  namespace: default
+		spec:
+		  ports:
+		  - name: http
+		    port: 8080
+		    targetPort: 80
+		  selector:
+		    webserver: kubia-website
+		  sessionAffinity: None
+		  type: LoadBalancer
+
+	*/
+	return nil
 }
