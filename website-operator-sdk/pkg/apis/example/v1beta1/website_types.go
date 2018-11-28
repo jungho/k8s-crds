@@ -11,13 +11,15 @@ import (
 type WebsiteSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	GitRepo string `json:"gitRepo,string,omitempty"`
+	GitRepo  string `json:"gitRepo,string,omitempty"`
+	Replicas int32  `json:"replicas"`
 }
 
 // WebsiteStatus defines the observed state of Website
 type WebsiteStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
+	Replicas int32 `json:"replicas"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

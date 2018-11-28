@@ -4,6 +4,7 @@ import (
 	"context"
 
 	examplev1beta1 "github.com/jungho/k8s-crds/website-operator-sdk/pkg/apis/example/v1beta1"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -53,7 +54,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 
 	// TODO(user): Modify this to be the types you create that are owned by the primary resource
 	// Watch for changes to secondary resource Pods and requeue the owner Website
-	err = c.Watch(&source.Kind{Type: &corev1.Pod{}}, &handler.EnqueueRequestForOwner{
+	err = c.Watch(&source.Kind{Type: &appsv1.Deployment{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
 		OwnerType:    &examplev1beta1.Website{},
 	})
@@ -126,6 +127,25 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 	// Pod already exists - don't requeue
 	reqLogger.Info("Skip reconcile: Pod already exists", "Pod.Namespace", found.Namespace, "Pod.Name", found.Name)
 	return reconcile.Result{}, nil
+}
+
+// returns a Deployment that will manage a set of Pods owned by the Website custom resource
+func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
+	labels := map[string]string{
+		"webserver": ws.Name,
+	}
+
+	//we are creating a Deployment resource that will be owned by our Website resource
+	return &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      ws.Name + "-website",
+			Namespace: ws.Namespace,
+			Labels:    labels,
+		},
+		Spec: appsv1.DeploymentSpec{
+			Replicas: &ws.Spec.Replicas,
+		},
+	}
 }
 
 // newPodForCR returns a busybox pod with the same name/namespace as the cr
