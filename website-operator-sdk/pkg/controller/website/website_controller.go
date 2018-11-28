@@ -77,7 +77,8 @@ type ReconcileWebsite struct {
 }
 
 // Reconcile reads that state of the cluster for a Website object and makes changes based on the state read
-// and what is in the Website.Spec.  It will create a Deployment and Service if they do not exist.
+// and what is in the Website.Spec.  It will create a Deployment and Service if they do not exist.  This is the key
+// method that you need to implement after you generate the scaffolding.
 //
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
@@ -173,7 +174,7 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 		        - mountPath: /usr/share/nginx/html
 		          name: html
 		          readOnly: true
-		      - env:
+		        env:
 		        - name: GIT_SYNC_REPO
 		          value: https://github.com/luksa/kubia-website-example.git
 		        - name: GIT_SYNC_DEST
@@ -184,7 +185,7 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 		          value: FETCH_HEAD
 		        - name: GIT_SYNC_WAIT
 		          value: "10"
-		        image: openweb/git-sync
+		      - image: openweb/git-sync
 		        imagePullPolicy: Always
 		        name: git-sync
 		        resources: {}
@@ -211,7 +212,66 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 					Name:   ws.Name + "-website",
 					Labels: labels,
 				},
-				Spec: v1.PodSpec{},
+				Spec: v1.PodSpec{
+					Containers: []v1.Container{
+						v1.Container{
+							Name:  "main",
+							Image: "nginx:alpine",
+							Ports: []v1.ContainerPort{
+								v1.ContainerPort{
+									ContainerPort: 80,
+									Protocol:      v1.ProtocolTCP,
+								},
+							},
+							VolumeMounts: []v1.VolumeMount{
+								v1.VolumeMount{
+									Name:      "html",
+									MountPath: "/usr/share/nginx/html",
+									ReadOnly:  true,
+								},
+							},
+							Env: []v1.EnvVar{
+								v1.EnvVar{
+									Name:  "GIT_SYNC_REPO",
+									Value: ws.Spec.GitRepo,
+								},
+								v1.EnvVar{
+									Name:  "GIT_SYNC_DEST",
+									Value: "/gitrepo",
+								},
+								v1.EnvVar{
+									Name:  "GIT_SYNC_BRANCH",
+									Value: "master",
+								},
+								v1.EnvVar{
+									Name:  "GIT_SYNC_REV",
+									Value: "FETCH_HEAD",
+								},
+								v1.EnvVar{
+									Name:  "GIT_SYNC_WAIT",
+									Value: "10",
+								},
+							},
+						},
+						v1.Container{
+							Name: "git-sync",
+							VolumeMounts: []v1.VolumeMount{
+								v1.VolumeMount{
+									Name:      "html",
+									MountPath: "/gitrepo",
+								},
+							},
+						},
+					},
+					Volumes: []v1.Volume{
+						v1.Volume{
+							Name: "html",
+							VolumeSource: v1.VolumeSource{
+								EmptyDir: &v1.EmptyDirVolumeSource{},
+							},
+						},
+					},
+				},
 			},
 		},
 	}
