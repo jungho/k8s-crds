@@ -38,8 +38,52 @@ To add the Website CRD, from the website-controller directory and run the follow
 operator-sdk add api --api-version=example.architech.ca/v1beta1 --kind=Website
 ```
 
-Next, add the controller that will watch and reconsile Website resources:
+This will generate some golang code as well as resource yaml files for your CRD.  The yaml files generated in the deploy directory:
+
+```sh
+[~/go/src/github.com/jungho/k8s-crds/website-operator-sdk/deploy, master]: tree -L 2
+.
+├── crds
+│   ├── example_v1beta1_website_crd.yaml  # your Website CustomResourceDefinition
+│   └── example_v1beta1_website_cr.yaml   # your Website resource
+├── operator.yaml # The deployment resource to deploy your operator
+├── role_binding.yaml # The RoleBinding that binds your ServiceAccount to the Role 
+├── role.yaml # The Role that your ServiceAccount will be bound to.  Has the necessary permissions to access the apiserver.
+└── service_account.yaml #The ServiceAccount that the operator will execute as
+```
+
+The golang code to represent your Website resource is generated in the pkg/apis/GROUP/VERSION directory.  We will modify the website_types.go file to define your Website resource in golang.
+
+```sh
+~/go/src/github.com/jungho/k8s-crds/website-operator-sdk/pkg/apis, master+1]: tree -L 3
+.
+├── addtoscheme_example_v1beta1.go
+├── apis.go
+└── example
+    └── v1beta1
+        ├── doc.go
+        ├── register.go
+        ├── website_types.go  #You will modify this file so you can consume your Website resource in golang
+        └── zz_generated.deepcopy.go
+
+2 directories, 6 files
+```
+
+Next, add the controller that will watch and reconcile Website resources.  
 
 ```sh
 operator-sdk add controller --api-version=example.architech.ca/v1beta1 --kind=Website
+```
+
+The sdk will generate the code for your controller in the pkg/controller directory.
+
+```sh
+[~/go/src/github.com/jungho/k8s-crds/website-operator-sdk/pkg/controller, master+1]: tree -L 2
+.
+├── add_website.go
+├── controller.go
+└── website
+    └── website_controller.go #You will modify this code to add your controller logic.
+
+1 directory, 3 files
 ```
