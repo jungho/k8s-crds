@@ -1,24 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: 2018-11-27T14:43:34Z
   name: kubia-website-lb
   namespace: default
-  resourceVersion: "846"
-  selfLink: /api/v1/namespaces/default/services/kubia-website-lb
-  uid: d1057192-f252-11e8-b679-080027853291
 spec:
-  clusterIP: 10.96.102.52
-  externalTrafficPolicy: Cluster
   ports:
   - name: http
-    nodePort: 31424
     port: 8080
-    protocol: TCP
     targetPort: 80
   selector:
     webserver: kubia-website
   sessionAffinity: None
   type: LoadBalancer
-status:
-  loadBalancer: {}
