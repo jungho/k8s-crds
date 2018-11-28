@@ -30,7 +30,7 @@ See [project layout](https://github.com/operator-framework/operator-sdk/blob/mas
 
 ## Create the scaffolding for the Website CRD and Custom Controller
 
-To add the Website CRD, from the website-controller directory and run the following command:
+To add the Website CRD, from the website-controller-sdk directory and run the following command:
 
 ```sh
 #You MUST run this within the website-controller-sdk project directory.  Otherwise it will fail.  
