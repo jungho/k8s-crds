@@ -22,9 +22,9 @@ spec:
       name: kubia-website
     spec:
       containers:
-      - image: nginx:alpine
+      - name: main 
+        image: nginx:alpine
         imagePullPolicy: IfNotPresent
-        name: main
         ports:
         - containerPort: 80
           protocol: TCP
@@ -33,20 +33,20 @@ spec:
         - mountPath: /usr/share/nginx/html
           name: html
           readOnly: true
-        env:
-          - name: GIT_SYNC_REPO
-            value: https://github.com/luksa/kubia-website-example.git
-          - name: GIT_SYNC_DEST
-            value: /gitrepo
-          - name: GIT_SYNC_BRANCH
-            value: master
-          - name: GIT_SYNC_REV
-            value: FETCH_HEAD
-          - name: GIT_SYNC_WAIT
-            value: "10"
-      - image: openweb/git-sync
+      - name: git-sync
+        image: openweb/git-sync
         imagePullPolicy: Always
-        name: git-sync
+        env:
+        - name: GIT_SYNC_REPO
+          value: https://github.com/luksa/kubia-website-example.git
+        - name: GIT_SYNC_DEST
+          value: /gitrepo
+        - name: GIT_SYNC_BRANCH
+          value: master
+        - name: GIT_SYNC_REV
+          value: FETCH_HEAD
+        - name: GIT_SYNC_WAIT
+          value: "10"
         resources: {}
         volumeMounts:
         - mountPath: /gitrepo
