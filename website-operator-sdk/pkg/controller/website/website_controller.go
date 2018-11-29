@@ -2,6 +2,7 @@ package website
 
 import (
 	"context"
+	"k8s.io/apimachinery/pkg/util/intstr"
 
 	examplev1beta1 "github.com/jungho/k8s-crds/website-operator-sdk/pkg/apis/example/v1beta1"
 	appsv1 "k8s.io/api/apps/v1"
@@ -54,11 +55,20 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// TODO(user): Modify this to be the types you create that are owned by the primary resource
-	// Watch for changes to secondary resource Pods and requeue the owner Website
+	// Watch for changes to secondary resource Deployment and Service and requeue the owner Website
 	err = c.Watch(&source.Kind{Type: &appsv1.Deployment{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
 		OwnerType:    &examplev1beta1.Website{},
 	})
+	if err != nil {
+		return err
+	}
+
+	err = c.Watch(&source.Kind{Type: &corev1.Service{}}, &handler.EnqueueRequestForOwner{
+		IsController: true,
+		OwnerType: &examplev1beta1.Website{},
+	})
+
 	if err != nil {
 		return err
 	}
@@ -86,9 +96,9 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 	reqLogger := log.WithValues("Request.Namespace", request.Namespace, "Request.Name", request.Name)
 	reqLogger.Info("Reconciling Website")
 
-	// Fetch the Website instance
-	instance := &examplev1beta1.Website{}
-	err := r.client.Get(context.TODO(), request.NamespacedName, instance)
+	// Fetch the Website ws
+	ws := &examplev1beta1.Website{}
+	err := r.client.Get(context.TODO(), request.NamespacedName, ws)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			// Request object not found, could have been deleted after reconcile request.
@@ -100,10 +110,14 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 		return reconcile.Result{}, err
 	}
 
-	deployment := newDeploymentForWebsite(instance)
+	labels := map[string]string{
+		"webserver": ws.Name,
+	}
 
-	// Set Website instance as the owner for the deployment and controller
-	if err := controllerutil.SetControllerReference(instance, deployment, r.scheme); err != nil {
+	deployment := newDeploymentForWebsite(ws, labels)
+
+	// Set Website ws as the owner for the deployment and controller
+	if err := controllerutil.SetControllerReference(ws, deployment, r.scheme); err != nil {
 		return reconcile.Result{}, err
 	}
 
@@ -111,7 +125,8 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 	err = r.client.Get(context.TODO(), types.NamespacedName{Name: deployment.Name, Namespace: deployment.Namespace}, found)
 
 	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Deployment", "Deployment.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
+		reqLogger.Info("Creating a new Deployment",
+			"Deployment.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
 		err = r.client.Create(context.TODO(), deployment)
 		if err != nil {
 			return reconcile.Result{}, err
@@ -124,15 +139,13 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 	}
 
 	//Deployment already exists - don't requeue
-	reqLogger.Info("Skip reconcile: Deployment already exists", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
+	reqLogger.Info("Skip reconcile: Deployment already exists",
+		"Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
 	return reconcile.Result{}, nil
 }
 
 // returns a Deployment that will manage a set of Pods owned by the Website custom resource
-func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
-	labels := map[string]string{
-		"webserver": ws.Name,
-	}
+func newDeploymentForWebsite(ws *examplev1beta1.Website, labels map[string]string) *appsv1.Deployment {
 
 	/*
 		We need to create Deployment resource that will be owned by our Website resource.
@@ -214,49 +227,49 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 				},
 				Spec: v1.PodSpec{
 					Containers: []v1.Container{
-						v1.Container{
+						{
 							Name:  "main",
 							Image: "nginx:alpine",
 							Ports: []v1.ContainerPort{
-								v1.ContainerPort{
+								{
 									ContainerPort: 80,
 									Protocol:      v1.ProtocolTCP,
 								},
 							},
 							VolumeMounts: []v1.VolumeMount{
-								v1.VolumeMount{
+								{
 									Name:      "html",
 									MountPath: "/usr/share/nginx/html",
 									ReadOnly:  true,
 								},
 							},
 						},
-						v1.Container{
+						{
 							Name: "git-sync",
 							Env: []v1.EnvVar{
-								v1.EnvVar{
+								{
 									Name:  "GIT_SYNC_REPO",
 									Value: ws.Spec.GitRepo,
 								},
-								v1.EnvVar{
+								{
 									Name:  "GIT_SYNC_DEST",
 									Value: "/gitrepo",
 								},
-								v1.EnvVar{
+								{
 									Name:  "GIT_SYNC_BRANCH",
 									Value: "master",
 								},
-								v1.EnvVar{
+								{
 									Name:  "GIT_SYNC_REV",
 									Value: "FETCH_HEAD",
 								},
-								v1.EnvVar{
+								{
 									Name:  "GIT_SYNC_WAIT",
 									Value: "10",
 								},
 							},
 							VolumeMounts: []v1.VolumeMount{
-								v1.VolumeMount{
+								{
 									Name:      "html",
 									MountPath: "/gitrepo",
 								},
@@ -264,7 +277,7 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 						},
 					},
 					Volumes: []v1.Volume{
-						v1.Volume{
+						{
 							Name: "html",
 							VolumeSource: v1.VolumeSource{
 								EmptyDir: &v1.EmptyDirVolumeSource{},
@@ -278,7 +291,7 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 }
 
 // returns a Service that will manage a set of Pods owned by the Website custom resource
-func newServiceForWebsite(ws *examplev1beta1.Website) *corev1.Service {
+func newServiceForWebsite(ws *examplev1beta1.Website, labels map[string]string) *corev1.Service {
 	/*
 		apiVersion: v1
 		kind: Service
@@ -292,9 +305,25 @@ func newServiceForWebsite(ws *examplev1beta1.Website) *corev1.Service {
 		    targetPort: 80
 		  selector:
 		    webserver: kubia-website
-		  sessionAffinity: None
 		  type: LoadBalancer
-
 	*/
-	return nil
+
+	return &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      ws.Name + "-website",
+			Namespace: ws.Namespace,
+			Labels:    labels,
+		},
+		Spec: corev1.ServiceSpec{
+			Ports: []corev1.ServicePort {
+				{
+					Name: "http",
+					Port: 8080,
+					TargetPort: intstr.FromInt(80),
+				},
+			},
+			Selector: map[string]string{"webserver": ws.Name},
+			Type: corev1.ServiceTypeLoadBalancer,
+		},
+	}
 }
