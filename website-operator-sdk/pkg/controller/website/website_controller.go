@@ -174,7 +174,10 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 		        - mountPath: /usr/share/nginx/html
 		          name: html
 		          readOnly: true
-		        env:
+		      - image: openweb/git-sync
+		        imagePullPolicy: Always
+						name: git-sync
+						env:
 		        - name: GIT_SYNC_REPO
 		          value: https://github.com/luksa/kubia-website-example.git
 		        - name: GIT_SYNC_DEST
@@ -185,9 +188,6 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 		          value: FETCH_HEAD
 		        - name: GIT_SYNC_WAIT
 		          value: "10"
-		      - image: openweb/git-sync
-		        imagePullPolicy: Always
-		        name: git-sync
 		        resources: {}
 		        volumeMounts:
 		        - mountPath: /gitrepo
@@ -230,6 +230,9 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 									ReadOnly:  true,
 								},
 							},
+						},
+						v1.Container{
+							Name: "git-sync",
 							Env: []v1.EnvVar{
 								v1.EnvVar{
 									Name:  "GIT_SYNC_REPO",
@@ -252,9 +255,6 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website) *appsv1.Deployment {
 									Value: "10",
 								},
 							},
-						},
-						v1.Container{
-							Name: "git-sync",
 							VolumeMounts: []v1.VolumeMount{
 								v1.VolumeMount{
 									Name:      "html",
