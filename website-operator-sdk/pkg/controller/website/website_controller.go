@@ -2,6 +2,7 @@ package website
 
 import (
 	"context"
+
 	"k8s.io/apimachinery/pkg/util/intstr"
 
 	examplev1beta1 "github.com/jungho/k8s-crds/website-operator-sdk/pkg/apis/example/v1beta1"
@@ -66,7 +67,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 
 	err = c.Watch(&source.Kind{Type: &corev1.Service{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
-		OwnerType: &examplev1beta1.Website{},
+		OwnerType:    &examplev1beta1.Website{},
 	})
 
 	if err != nil {
@@ -310,20 +311,20 @@ func newServiceForWebsite(ws *examplev1beta1.Website, labels map[string]string) 
 
 	return &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      ws.Name + "-website",
+			Name:      ws.Name + "-website-lb",
 			Namespace: ws.Namespace,
 			Labels:    labels,
 		},
 		Spec: corev1.ServiceSpec{
-			Ports: []corev1.ServicePort {
+			Ports: []corev1.ServicePort{
 				{
-					Name: "http",
-					Port: 8080,
+					Name:       "http",
+					Port:       8080,
 					TargetPort: intstr.FromInt(80),
 				},
 			},
 			Selector: map[string]string{"webserver": ws.Name},
-			Type: corev1.ServiceTypeLoadBalancer,
+			Type:     corev1.ServiceTypeLoadBalancer,
 		},
 	}
 }
