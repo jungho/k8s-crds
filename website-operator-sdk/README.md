@@ -91,9 +91,25 @@ The sdk will generate the code for your controller in the pkg/controller directo
 ## Modifying the generated code to add our reconciliation logic 
 
 First we modify [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/website_types.go). This file contains the generated golang 
-struct types for your Website resource. The SDK generates a skeleton, you need to take it the rest of the way.
-See the changes I made here [website_types.go](./pkg/apis/example/v1beta1/website_types.go).  Note, whenever you
-makes changes to this file, you need to run `operator-sdk generate k8s` to update other sdk generated files such as 
+struct types for your Website resource. The SDK generates a skeleton, you need to take it the rest of the way.  For our
+purposes, we want the GitRepo and Replicas fields added the spec and Replicas to the status.
+
+```go
+type WebsiteSpec struct {
+	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
+	GitRepo  string `json:"gitRepo,string,omitempty"`
+	Replicas int32  `json:"replicas"`
+}
+
+// WebsiteStatus defines the observed state of Website
+type WebsiteStatus struct {
+	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
+	Replicas int32 `json:"replicas"`
+}
+```
+ Note, as per the comments, whenever you makes changes to this file, you need to run `operator-sdk generate k8s` to update other sdk generated files such as 
 [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/zz_generated.deepcopy.go).
 
 Next, you need to implement the reconciliation logic by updating [pkg/controller/website/website_controller.go](./pkg/controller/website/website_controller.go).
@@ -116,4 +132,16 @@ See [pkg/controller/website/website_controller.go](./pkg/controller/website/webs
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
 func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Result, error) 
+```
+
+The Reconcile function is part of the [Reconciler](./vendor/sigs.k8s.io/controller-runtime/pkg/reconcile/reconcile.go) interface.
+The generated [ReconcileWebsite struct]() implements this interface.  It is responsible for implementing the reconciliation logic
+and will be invoked for each ADD, UPDATE, DELETE event for our Website resource.  See the 
+[Controller Runtime Client API](https://github.com/operator-framework/operator-sdk/blob/master/doc/user/client.md) for the key interfaces.
+
+## Build and Deploy the operator
+
+See the Operator SDK [User Guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md) for instructions to 
+build and run your controller within K8S and outside of K8S.
+
 ```

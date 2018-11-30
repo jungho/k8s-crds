@@ -112,14 +112,15 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 		return reconcile.Result{}, err
 	}
 
-	// Got the Website resource instance, now reconcile owned Deployment and Service resources
 	labels := map[string]string{
 		"webserver": ws.Name,
 	}
 
-	deployment := newDeploymentForWebsite(ws, labels)
-	// Set Website ws as the owner for the deployment and controller
-	if err := controllerutil.SetControllerReference(ws, deployment, r.scheme); err != nil {
+	var deployment *appsv1.Deployment
+	// Got the Website resource instance, now reconcile owned Deployment and Service resources
+	deployment, err = r.newDeploymentForWebsite(ws, labels)
+
+	if err != nil {
 		return reconcile.Result{}, err
 	}
 
@@ -143,16 +144,25 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 		return reconcile.Result{}, err
 	}
 
-	//Deployment already exists - don't requeue
+	//Deployment already exists, check the replica count int the status matches the desired replica count
 	reqLogger.Info("Skip reconcile: Deployment already exists",
 		"Deployment.Namespace", foundDeployment.Namespace, "Deployment.Name", foundDeployment.Name)
 
+	//make sure the replica count of the found deployment matches that of the spec
+	if ws.Spec.Replicas != *foundDeployment.Spec.Replicas {
+		foundDeployment.Spec.Replicas = &ws.Spec.Replicas
 
+		if err = r.client.Update(context.TODO(), foundDeployment); err != nil {
+			return reconcile.Result{}, err
+		}
+
+		return reconcile.Result{}, nil
+	}
+
+    var service *corev1.Service
 	// Now reconcile the Service that is owned by the Website resource
-	service := newServiceForWebsite(ws, labels)
-
-	// Set Website ws as the owner for the service
-	if err := controllerutil.SetControllerReference(ws, service, r.scheme); err != nil {
+	service, err = r.newServiceForWebsite(ws, labels)
+	if err != nil {
 		return reconcile.Result{}, err
 	}
 
@@ -179,7 +189,7 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 }
 
 // returns a Deployment that will manage a set of Pods owned by the Website custom resource
-func newDeploymentForWebsite(ws *examplev1beta1.Website, labels map[string]string) *appsv1.Deployment {
+func (r *ReconcileWebsite) newDeploymentForWebsite(ws *examplev1beta1.Website, labels map[string]string) (*appsv1.Deployment, error) {
 
 	/*
 		We need to create Deployment resource that will be owned by our Website resource.
@@ -243,7 +253,7 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website, labels map[string]strin
 		      - emptyDir: {}
 		        name: html
 	*/
-	return &appsv1.Deployment{
+	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      ws.Name + "-website",
 			Namespace: ws.Namespace,
@@ -322,10 +332,16 @@ func newDeploymentForWebsite(ws *examplev1beta1.Website, labels map[string]strin
 			},
 		},
 	}
+
+	if err := controllerutil.SetControllerReference(ws, deployment, r.scheme); err != nil {
+		return nil, err
+	}
+
+	return deployment, nil
 }
 
 // returns a Service that will manage a set of Pods owned by the Website custom resource
-func newServiceForWebsite(ws *examplev1beta1.Website, labels map[string]string) *corev1.Service {
+func (r *ReconcileWebsite) newServiceForWebsite(ws *examplev1beta1.Website, labels map[string]string) (*corev1.Service, error) {
 	/*
 		apiVersion: v1
 		kind: Service
@@ -342,7 +358,7 @@ func newServiceForWebsite(ws *examplev1beta1.Website, labels map[string]string) 
 		  type: LoadBalancer
 	*/
 
-	return &corev1.Service{
+	service := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      ws.Name + "-website-lb",
 			Namespace: ws.Namespace,
@@ -360,4 +376,10 @@ func newServiceForWebsite(ws *examplev1beta1.Website, labels map[string]string) 
 			Type:     corev1.ServiceTypeLoadBalancer,
 		},
 	}
+
+	if err := controllerutil.SetControllerReference(ws, service, r.scheme); err != nil {
+		return nil, err
+	}
+
+	return service, nil
 }
