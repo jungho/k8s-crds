@@ -119,12 +119,12 @@ The key methods are:
 func add(mgr manager.Manager, r reconcile.Reconciler) error 
 ```
 This is the method makes the Manager aware of your controller and is also where you specify which resources
-your controller "watches" for changes.  We want to watch of Website, Deployment and Service services.  Note, we don't
+your controller "watches" for changes.  We want to watch for Website, Deployment and Service resources.  Note, we don't
 care about all Deployment and Service resources, only those "owned" by Website resources.  
 See [pkg/controller/website/website_controller.go](./pkg/controller/website/website_controller.go).
 
 ```go
-// Reconcile reads that state of the cluster for a Website object and makes changes based on the state read
+// Reconcile reads the state of the cluster for a Website object and makes changes based on the state read
 // and what is in the Website.Spec.  It will create a Deployment and Service if they do not exist.  This is the key
 // method that you need to implement after you generate the scaffolding.
 //
@@ -133,10 +133,7 @@ See [pkg/controller/website/website_controller.go](./pkg/controller/website/webs
 func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Result, error) 
 ```
 
-The Reconcile function is part of the [Reconciler](./vendor/sigs.k8s.io/controller-runtime/pkg/reconcile/reconcile.go) interface.
-The generated [ReconcileWebsite struct]() implements this interface.  It is responsible for implementing the reconciliation logic
-and will be invoked for each ADD, UPDATE, DELETE event for our Website resource.  See the 
-[Controller Runtime Client API](https://github.com/operator-framework/operator-sdk/blob/master/doc/user/client.md) for the key interfaces.
+The Reconcile function is part of the [Reconciler](./vendor/sigs.k8s.io/controller-runtime/pkg/reconcile/reconcile.go) interface. The generated [ReconcileWebsite struct]() implements this interface.  It is responsible for implementing the reconciliation logic and will be invoked for each ADD, UPDATE, DELETE event for our Website resource.  See the [Controller Runtime Client API](https://github.com/operator-framework/operator-sdk/blob/master/doc/user/client.md) for the key interfaces.
 
 ## Build and Deploy the operator
 
