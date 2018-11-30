@@ -9,5 +9,6 @@ spec:
     listKind: WebsiteList
     plural: websites
     singular: website
+    shortNames: ['ws']
   scope: Namespaced
   version: v1beta1

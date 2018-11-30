@@ -289,7 +289,8 @@ func (r *ReconcileWebsite) newDeploymentForWebsite(ws *examplev1beta1.Website, l
 							},
 						},
 						{
-							Name: "git-sync",
+							Name:  "git-sync",
+							Image: "openweb/git-sync",
 							Env: []v1.EnvVar{
 								{
 									Name:  "GIT_SYNC_REPO",
