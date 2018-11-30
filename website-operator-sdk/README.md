@@ -84,15 +84,13 @@ The sdk will generate the code for your controller in the pkg/controller directo
 ├── add_website.go
 ├── controller.go
 └── website
-    └── website_controller.go #You will modify this code to add your controller logic.
+    └── website_controller.go #You will modify this code to add your reconciliation logic.
 
 1 directory, 3 files
 ```
 ## Modifying the generated code to add our reconciliation logic 
 
-First we modify [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/website_types.go). This file contains the generated golang 
-struct types for your Website resource. The SDK generates a skeleton, you need to take it the rest of the way.  For our
-purposes, we want the GitRepo and Replicas fields added the spec and Replicas to the status.
+First we modify [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/website_types.go). This file contains the generated golang struct types for your Website resource. The SDK generates a skeleton, you need to take it the rest of the way.  For our purposes, we want the GitRepo and Replicas fields added the spec and Replicas to the status.
 
 ```go
 type WebsiteSpec struct {
@@ -113,6 +111,7 @@ type WebsiteStatus struct {
 [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/zz_generated.deepcopy.go).
 
 Next, you need to implement the reconciliation logic by updating [pkg/controller/website/website_controller.go](./pkg/controller/website/website_controller.go).
+
 The key methods are:
 
 ```go
@@ -141,7 +140,4 @@ and will be invoked for each ADD, UPDATE, DELETE event for our Website resource.
 
 ## Build and Deploy the operator
 
-See the Operator SDK [User Guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md) for instructions to 
-build and run your controller within K8S and outside of K8S.
-
-```
+See the Operator SDK [User Guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md) for instructions to build and run your controller within K8S and outside of K8S.

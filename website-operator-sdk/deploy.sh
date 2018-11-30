@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-operator-sdk build $1
-
-echo "pushing $1"
-docker push $1
+./build_push.sh
 
 kubectl create -f ./deploy/service_account.yaml
 kubectl create -f ./deploy/role.yaml

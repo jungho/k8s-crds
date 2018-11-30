@@ -159,7 +159,7 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 		return reconcile.Result{}, nil
 	}
 
-    var service *corev1.Service
+	var service *corev1.Service
 	// Now reconcile the Service that is owned by the Website resource
 	service, err = r.newServiceForWebsite(ws, labels)
 	if err != nil {
@@ -368,8 +368,8 @@ func (r *ReconcileWebsite) newServiceForWebsite(ws *examplev1beta1.Website, labe
 			Ports: []corev1.ServicePort{
 				{
 					Name:       "http",
-					Port:       8080,
-					TargetPort: intstr.FromInt(80),
+					Port:       ws.Spec.Port,
+					TargetPort: intstr.FromInt(int(ws.Spec.TargetPort)),
 				},
 			},
 			Selector: map[string]string{"webserver": ws.Name},
