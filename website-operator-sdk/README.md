@@ -72,6 +72,7 @@ The golang code to represent your Website resource is generated in the pkg/apis/
 Next, add the controller that will watch and reconcile Website resources.  
 
 ```sh
+#Make sure you use the SAME api-version and kind as your API!!
 operator-sdk add controller --api-version=example.architech.ca/v1beta1 --kind=Website
 ```
 
@@ -86,4 +87,33 @@ The sdk will generate the code for your controller in the pkg/controller directo
     └── website_controller.go #You will modify this code to add your controller logic.
 
 1 directory, 3 files
+```
+## Modifying the generated code to add our reconciliation logic 
+
+First we modify [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/website_types.go). This file contains the generated golang 
+struct types for your Website resource. The SDK generates a skeleton, you need to take it the rest of the way.
+See the changes I made here [website_types.go](./pkg/apis/example/v1beta1/website_types.go).  Note, whenever you
+makes changes to this file, you need to run `operator-sdk generate k8s` to update other sdk generated files such as 
+[pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/zz_generated.deepcopy.go).
+
+Next, you need to implement the reconciliation logic by updating [pkg/controller/website/website_controller.go](./pkg/controller/website/website_controller.go).
+The key methods are:
+
+```go
+// add adds a new Controller to mgr with r as the reconcile.Reconciler
+func add(mgr manager.Manager, r reconcile.Reconciler) error 
+```
+This is the method makes the Manager aware of your controller and is also where you specify which resources
+your controller "watches" for changes.  We want to watch of Website, Deployment and Service services.  Note, we don't
+care about all Deployment and Service resources, only those "owned" by Website resources.  
+See [pkg/controller/website/website_controller.go](./pkg/controller/website/website_controller.go).
+
+```go
+// Reconcile reads that state of the cluster for a Website object and makes changes based on the state read
+// and what is in the Website.Spec.  It will create a Deployment and Service if they do not exist.  This is the key
+// method that you need to implement after you generate the scaffolding.
+//
+// The Controller will requeue the Request to be processed again if the returned error is non-nil or
+// Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
+func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Result, error) 
 ```

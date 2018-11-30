@@ -82,6 +82,7 @@ var _ reconcile.Reconciler = &ReconcileWebsite{}
 type ReconcileWebsite struct {
 	// This client, initialized using mgr.Client() above, is a split client
 	// that reads objects from the cache and writes to the apiserver
+	// The client provides you the ability to Create, Update, Delete resources
 	client client.Client
 	scheme *runtime.Scheme
 }
@@ -101,7 +102,7 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 	err := r.client.Get(context.TODO(), request.NamespacedName, ws)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			// Request object not found, could have been deleted after reconcile request.
+			// Request object not foundDeployment, could have been deleted after reconcile request.
 			// Owned objects are automatically garbage collected. For additional cleanup logic use finalizers.
 			// Return and don't requeue
 			return reconcile.Result{}, nil
@@ -110,20 +111,23 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 		return reconcile.Result{}, err
 	}
 
+	// Got the Website resource instance, now reconcile owned Deployment and Service resources
 	labels := map[string]string{
 		"webserver": ws.Name,
 	}
 
 	deployment := newDeploymentForWebsite(ws, labels)
-
 	// Set Website ws as the owner for the deployment and controller
 	if err := controllerutil.SetControllerReference(ws, deployment, r.scheme); err != nil {
 		return reconcile.Result{}, err
 	}
 
-	found := &appsv1.Deployment{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: deployment.Name, Namespace: deployment.Namespace}, found)
+	foundDeployment := &appsv1.Deployment{}
 
+	// See if a Deployment already exists
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: deployment.Name, Namespace: deployment.Namespace}, foundDeployment)
+
+	// if the Deployment doesn't exist create it
 	if err != nil && errors.IsNotFound(err) {
 		reqLogger.Info("Creating a new Deployment",
 			"Deployment.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
@@ -140,7 +144,36 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 
 	//Deployment already exists - don't requeue
 	reqLogger.Info("Skip reconcile: Deployment already exists",
-		"Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
+		"Deployment.Namespace", foundDeployment.Namespace, "Deployment.Name", foundDeployment.Name)
+
+
+	// Now reconcile the Service that is owned by the Website resource
+	service := newServiceForWebsite(ws, labels)
+
+	// Set Website ws as the owner for the service
+	if err := controllerutil.SetControllerReference(ws, service, r.scheme); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	foundService := &corev1.Service{}
+
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, foundService)
+
+	if err != nil && errors.IsNotFound(err) {
+		reqLogger.Info("Creating a new Service", "Service.Namespace", service.Name, "Service.Name", service.Name)
+		err = r.client.Create(context.TODO(), service)
+		if err != nil {
+			return reconcile.Result{}, err
+		}
+
+		return reconcile.Result{}, nil
+	} else if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	reqLogger.Info("Skip reconcile: Service already exists",
+		"Service.Namespace", foundService.Namespace, "Service.Name", foundService.Name)
+
 	return reconcile.Result{}, nil
 }
 
