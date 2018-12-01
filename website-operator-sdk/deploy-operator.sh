@@ -4,16 +4,22 @@ deleteAndCreate=true
 runLocal=false
 operatorName="website-operator"
 namespace="default"
+image=architechbootcamp/website-operator:1.0.0
 
-function usage {
-    log "To build, push, and deploy the operator to a cluster: ./deploy_operator.sh <image>"
-    log "To build, push, run operator locally: ./deploy_operator.sh -l <image>"
+function log {
+    echo "deploy-operator.sh --> $*"
 }
 
-while getopts ":l" opt; do
+function usage {
+    log "To build, push, and deploy the operator to a cluster: ./deploy-operator.sh"
+    log "To build, push, run operator locally: ./deploy-operator.sh -l"
+}
+
+while getopts ":l:" opt; do
     case $opt in
         l)
             runLocal=true
+            log "will run operator locally"
             ;;
         \?) #invalid option
             log "${OPTARG} is not a valid option"
@@ -23,28 +29,28 @@ while getopts ":l" opt; do
     esac
 done
 
-if [ -z "$1" ] ; then log "docker image must be provided"; exit 1; fi
+if [ -z "$image" ] ; then log "docker image must be provided"; exit 1; fi
 
-echo "building the operator..."
-operator-sdk build "$1"
+log "building the operator with image tag ${image}"
+operator-sdk build "$image"
 
-echo "pushing operator image $1"
-docker push "$1"
+log "pushing operator image ${image}"
+docker push "$image"
 
 if [ "$deleteAndCreate" = true ]; then
-    echo "deleting the existing CRD"
+    log "deleting the existing CRD"
     kubectl delete -f ./deploy/crds/example_v1beta1_website_crd.yaml
 fi
 
-echo "creating Website CRD"
+log "creating Website CRD"
 kubectl create -f ./deploy/crds/example_v1beta1_website_crd.yaml
 
 if [ "$runLocal" = true ]; then
-    echo "running operator locally"
+    log "running operator locally"
     export OPERATOR_NAME="$operatorName"
-    operator-sdk local --namespace "$default"
+    operator-sdk up local --namespace "$default"
 else
-    echo "deploying operator to the cluster"
+    log "deploying operator to the cluster"
     kubectl delete -f ./deploy/operator.yaml
     kubectl create -f ./deploy/operator.yaml
 fi
