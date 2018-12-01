@@ -12,7 +12,7 @@ import (
 type WebsiteSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	GitRepo    string `json:"gitRepo,string,omitempty"`
+	GitRepo    string `json:"gitRepo"`
 	Replicas   int32  `json:"replicas"`
 	Port       int32  `json:"port"`
 	TargetPort int32  `json:"targetPort"`
