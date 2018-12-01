@@ -137,4 +137,16 @@ The Reconcile function is part of the [Reconciler](./vendor/sigs.k8s.io/controll
 
 ## Build and Deploy the operator
 
-See the Operator SDK [User Guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md) for instructions to build and run your controller within K8S and outside of K8S.
+You can build and deploy your operator to a cluster or run the operator locally.  I have created a shell script to do this.
+
+1. Update the container image in [deploy/operator.yaml](./deploy/operator.yaml) to be your controller image.
+2. Update the image variable in [deploy-operator.sh](./deploy-operator.sh) to be your controller image.
+
+To deploy to the cluster just run `./deploy-operator.sh` without any flags.
+To run the operator locally, run `./deploy-operator.sh -l` 
+
+## Debugging the Operator
+
+In Golang, create run/debug configuration and configure like so (Note the Environment Variables!):
+
+![Run/Debug Configuration for Golang](./goland-debug-config.png)
