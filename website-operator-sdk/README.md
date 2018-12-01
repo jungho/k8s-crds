@@ -96,8 +96,10 @@ First we modify [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v
 type WebsiteSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	GitRepo  string `json:"gitRepo,string,omitempty"`
-	Replicas int32  `json:"replicas"`
+	GitRepo    string `json:"gitRepo,string,omitempty"`
+	Replicas   int32  `json:"replicas"`
+	Port       int32  `json:"port"`
+	TargetPort int32  `json:"targetPort"`
 }
 
 // WebsiteStatus defines the observed state of Website
