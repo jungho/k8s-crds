@@ -150,3 +150,9 @@ To run the operator locally, run `./deploy-operator.sh -l`
 In Golang, create run/debug configuration and configure like so (Note the Environment Variables!):
 
 ![Run/Debug Configuration for Golang](./goland-debug-config.png)
+
+In VSCode, create a launch configuration like so:
+
+![VSCode Debug Launch Configuration](./debug-go-vscode.png)
+
+Then open the main.go file prior to launching the configuration.
