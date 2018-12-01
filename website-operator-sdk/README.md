@@ -135,7 +135,7 @@ See [pkg/controller/website/website_controller.go](./pkg/controller/website/webs
 func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Result, error) 
 ```
 
-The Reconcile function is part of the [Reconciler](./vendor/sigs.k8s.io/controller-runtime/pkg/reconcile/reconcile.go) interface. The generated [ReconcileWebsite struct]() implements this interface.  It is responsible for implementing the reconciliation logic and will be invoked for each ADD, UPDATE, DELETE event for our Website resource.  See the [Controller Runtime Client API](https://github.com/operator-framework/operator-sdk/blob/master/doc/user/client.md) for the key interfaces.
+The Reconcile function is part of the [Reconciler](./vendor/sigs.k8s.io/controller-runtime/pkg/reconcile/reconcile.go) interface. The generated [ReconcileWebsite struct]() satisfies this interface.  It is responsible for implementing the reconciliation logic and will be invoked for each ADD, UPDATE, DELETE event for our Website resource.  See the [Controller Runtime Client API](https://github.com/operator-framework/operator-sdk/blob/master/doc/user/client.md) for the key interfaces.
 
 ## Build and Deploy the operator
 
