@@ -147,12 +147,12 @@ To run the operator locally, run `./deploy-operator.sh -l`
 
 ## Debugging the Operator
 
-In Golang, create run/debug configuration and configure like so (Note the Environment Variables!):
+In Jetbrains Goland IDE, create run/debug configuration and configure like so (Note the Environment Variables!):
 
 ![Run/Debug Configuration for Golang](./goland-debug-config.png)
 
-In VSCode, create a launch configuration like so:
+In VS Code, create a launch configuration like so:
 
 ![VSCode Debug Launch Configuration](./debug-go-vscode.png)
 
-Then open the main.go file prior to launching the configuration.
+Then open the main.go file prior to launching the configuration.  See the following docs for more details - https://github.com/Microsoft/vscode-go/wiki/Debugging-Go-code-using-VS-Code.

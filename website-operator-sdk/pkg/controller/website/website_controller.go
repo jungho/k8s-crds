@@ -361,7 +361,7 @@ func (r *ReconcileWebsite) newServiceForWebsite(ws *examplev1beta1.Website, labe
 
 	service := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      ws.Name + "-lb",
+			Name:      ws.Name + "-service",
 			Namespace: ws.Namespace,
 			Labels:    labels,
 		},
