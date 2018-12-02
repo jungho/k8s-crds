@@ -1,4 +1,4 @@
-## Create a new Operator SDK Project
+## Creating a new Operator SDK Project
 
 The benefit of Operator SDK is that it generates lot of the scaffolding to make creating CRDs and custom controllers much, much easier.  To create a new Operator SDK project run the following command somewhere within your GOPATH:
 
