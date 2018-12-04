@@ -143,6 +143,7 @@ You can build and deploy your operator to a cluster or run the operator locally.
 
 1. Update the container image in [deploy/operator.yaml](./deploy/operator.yaml) to be your controller image.
 2. Update the image variable in [deploy-operator.sh](./deploy-operator.sh) to be your controller image.
+3. Run `./deploy-rbac.sh` to deploy the RBAC roles and rolebindings
 
 To deploy to the cluster just run `./deploy-operator.sh` without any flags.
 To run the operator locally, run `./deploy-operator.sh -l` 
