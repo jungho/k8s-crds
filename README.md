@@ -1,15 +1,21 @@
 # Kubernetes Custom Resource Definitions
 
-Kubernetes is a highly extensible platform.  It supports many [extension points](https://kubernetes.io/docs/concepts/extend-kubernetes/extend-cluster/) to extend and customize your Kubernetes deployment without touching the core kubernetes source code.  Here I focus on Custom Resource Definitions, what they are, why they are useful, and how to implement them using [Kubebuilder](https://book.kubebuilder.io/) and [Operator SDK](https://github.com/operator-framework/operator-sdk).  I will explain CRDs using the excellent example from the book [Kubernetes in Action](https://www.manning.com/books/kubernetes-in-action) by [Marko Lukša](https://github.com/luksa).
+Kubernetes is a highly extensible platform.  It supports many [extension points](https://kubernetes.io/docs/concepts/extend-kubernetes/extend-cluster/) to extend and customize your Kubernetes deployment without touching the core kubernetes source code.  Here I focus on [Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#customresourcedefinitions), what they are, why they are useful, and how to implement them using [Kubebuilder](https://book.kubebuilder.io/) and [Operator SDK](https://github.com/operator-framework/operator-sdk).  I will explain CRDs using the excellent example from the book [Kubernetes in Action](https://www.manning.com/books/kubernetes-in-action) by [Marko Lukša](https://github.com/luksa).
 
 **Note, this is an EXCELLENT book on Kubernetes and I highly recommend you read it!**
 
-We will first dive into Marko's example as it is simple and clear.  However, his implementation is intentionally very simple and as he notes "barely working".  So we will reimplement his example using Kubebuilder and Operator SDK which enable you to build production grade CRDs and Controllers quickly.  
+We will first dive into Marko's example as it is simple and clear.  However, his implementation is intentionally very simple and as he notes "barely working".  So we will re-implement his example using Kubebuilder and Operator SDK which enable you to build production grade CRDs and Controllers quickly.  
 
 ## What and Why?
 
-But first, let's talk about what Custom Resource Definition are and why they are useful. WIP
+Kubernetes provides a rich set of API primitives to specify the desired state of your system.  However, when it comes to deploying complex infrastructure such as Prometheus, ELK stack, etc that have multiple components that interact with each other and need to be configured, this becomes very complex.  CustomResourceDefinitions are a means to create new API resources that model your problem/solution space and abstract away this complexity.  For example, the [Prometheus Operator](https://coreos.com/operators/prometheus/docs/latest/user-guides/getting-started.html) from CoreOS defines the following CRDs:
 
+* [Prometheus](./prometheus/prometheus.yaml) defines the desired state of the Prometheus deployment
+* [AlertManager](./prometheus/alertmanagers.yaml) describes an Alertmanager cluster
+* [PrometheusRule](./prometheus/prometheus-rule.yaml) defines alerting rules for a Prometheus instance
+* [ServiceMonitor](./prometheus/servicemonitor.yaml) defines the set of targets to be monitored by Prometheus.  You select Services (and the underlying Pods) to be monitored using labels and label selectors.
+
+Anyone that understands Prometheus, would understand these resource types.  Instead of thinking in terms of Deployments, Statefulsets, Services etc, you can now think in concepts you are familiar with.  This is the value of Custom Resource Definitions!  Of course, the Kubernetes API primitives are still there. To deploy Prometheus, Alertmanager, Exporters, Grafana etc, the Prometheus Operator deploys Deployments, StatefulSets, Services and of course, Pods, to bring up the components in a resilient manner.  This is done through an implementation of a custom controller that consumes the CRDs and creates the Kubernetes resources to deploy the components.  
 
 ## Marko Lukša Website Example ##
 
