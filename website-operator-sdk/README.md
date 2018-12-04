@@ -120,7 +120,7 @@ The key methods are:
 // add adds a new Controller to mgr with r as the reconcile.Reconciler
 func add(mgr manager.Manager, r reconcile.Reconciler) error 
 ```
-This is the method makes the Manager aware of your controller and is also where you specify which resources
+This is the method that makes the Manager aware of your controller and is also where you specify which resources
 your controller "watches" for changes.  We want to watch for Website, Deployment and Service resources.  Note, we don't
 care about all Deployment and Service resources, only those "owned" by Website resources.  
 See [pkg/controller/website/website_controller.go](./pkg/controller/website/website_controller.go).
