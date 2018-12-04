@@ -96,8 +96,10 @@ First we modify [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v
 type WebsiteSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	GitRepo  string `json:"gitRepo,string,omitempty"`
-	Replicas int32  `json:"replicas"`
+	GitRepo    string `json:"gitRepo,string,omitempty"`
+	Replicas   int32  `json:"replicas"`
+	Port       int32  `json:"port"`
+	TargetPort int32  `json:"targetPort"`
 }
 
 // WebsiteStatus defines the observed state of Website
@@ -133,8 +135,26 @@ See [pkg/controller/website/website_controller.go](./pkg/controller/website/webs
 func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Result, error) 
 ```
 
-The Reconcile function is part of the [Reconciler](./vendor/sigs.k8s.io/controller-runtime/pkg/reconcile/reconcile.go) interface. The generated [ReconcileWebsite struct]() implements this interface.  It is responsible for implementing the reconciliation logic and will be invoked for each ADD, UPDATE, DELETE event for our Website resource.  See the [Controller Runtime Client API](https://github.com/operator-framework/operator-sdk/blob/master/doc/user/client.md) for the key interfaces.
+The Reconcile function is part of the [Reconciler](./vendor/sigs.k8s.io/controller-runtime/pkg/reconcile/reconcile.go) interface. The generated [ReconcileWebsite struct]() satisfies this interface.  It is responsible for implementing the reconciliation logic and will be invoked for each ADD, UPDATE, DELETE event for our Website resource.  See the [Controller Runtime Client API](https://github.com/operator-framework/operator-sdk/blob/master/doc/user/client.md) for the key interfaces.
 
 ## Build and Deploy the operator
 
-See the Operator SDK [User Guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md) for instructions to build and run your controller within K8S and outside of K8S.
+You can build and deploy your operator to a cluster or run the operator locally.  I have created a shell script to do this.
+
+1. Update the container image in [deploy/operator.yaml](./deploy/operator.yaml) to be your controller image.
+2. Update the image variable in [deploy-operator.sh](./deploy-operator.sh) to be your controller image.
+
+To deploy to the cluster just run `./deploy-operator.sh` without any flags.
+To run the operator locally, run `./deploy-operator.sh -l` 
+
+## Debugging the Operator
+
+In Jetbrains Goland IDE, create run/debug configuration and configure like so (Note the Environment Variables!):
+
+![Run/Debug Configuration for Golang](./goland-debug-config.png)
+
+In VS Code, create a launch configuration like so:
+
+![VSCode Debug Launch Configuration](./debug-go-vscode.png)
+
+Then open the main.go file prior to launching the configuration.  See the following docs for more details - https://github.com/Microsoft/vscode-go/wiki/Debugging-Go-code-using-VS-Code.

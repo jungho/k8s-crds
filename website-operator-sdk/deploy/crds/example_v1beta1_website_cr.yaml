@@ -7,4 +7,4 @@ spec:
   gitRepo: https://github.com/luksa/kubia-website-example.git
   replicas: 2
   port: 8080
-  targetPort: 8080
+  targetPort: 80

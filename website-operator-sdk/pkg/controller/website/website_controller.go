@@ -255,7 +255,7 @@ func (r *ReconcileWebsite) newDeploymentForWebsite(ws *examplev1beta1.Website, l
 	*/
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      ws.Name + "-website",
+			Name:      ws.Name,
 			Namespace: ws.Namespace,
 			Labels:    labels,
 		},
@@ -266,7 +266,7 @@ func (r *ReconcileWebsite) newDeploymentForWebsite(ws *examplev1beta1.Website, l
 			},
 			Template: v1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:   ws.Name + "-website",
+					Name:   ws.Name,
 					Labels: labels,
 				},
 				Spec: v1.PodSpec{
@@ -361,7 +361,7 @@ func (r *ReconcileWebsite) newServiceForWebsite(ws *examplev1beta1.Website, labe
 
 	service := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      ws.Name + "-website-lb",
+			Name:      ws.Name + "-service",
 			Namespace: ws.Namespace,
 			Labels:    labels,
 		},

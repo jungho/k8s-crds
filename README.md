@@ -8,7 +8,7 @@ We will first dive into Marko's example as it is simple and clear.  However, his
 
 ## What and Why?
 
-But first, let's talk about what Custom Resource Definition are and why they are useful.
+But first, let's talk about what Custom Resource Definition are and why they are useful. WIP
 
 
 ## Marko Lukša Website Example ##
@@ -87,6 +87,8 @@ See the following diagram from the [Kubernetes in Action](https://www.manning.co
 ![Controller Pod](./images/controller-pod.png)
 
 ## Kubebuilder
+
+TODO: finish implementation
 
 ## Operator SDK
 
