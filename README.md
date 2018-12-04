@@ -94,13 +94,17 @@ See the following diagram from the [Kubernetes in Action](https://www.manning.co
 
 ## Kubebuilder
 
-TODO: finish implementation
+Kubebuilder is part of the Kubernetes [api-machinery SIG](https://groups.google.com/forum/#!forum/kubernetes-sig-api-machinery) and is fast on track for being the framework for building custom CRDs, Controllers and [Webhooks](https://github.com/kubernetes-sigs/kubebuilder/blob/master/docs/book/beyond_basics/what_is_a_webhook.md).
+
+The Kubebuilder docs are excellent.  See the [installation and setup](https://book.kubebuilder.io/getting_started/installation_and_setup.html) docs then see [here](./website-kubebuilder/README.md) for instructions on how to implement our custom CRD/Controller, debug, and deploy to Kubernetes.
 
 ## Operator SDK
 
 **Note that Operator SDK is alpha software!  Proceed with caution!**
 
-See the [user guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md) to install Operator SDK locally on your machine.  Note the dependencies!  After you have installed the sdk, see [here](./website-operator-sdk/README.md) for instructions how to implement the Website CRD and custom controller and to deploy to AKS.
+Operator SDK is part of CoreOS' [Operator Framework](https://github.com/operator-framework) and is the basis for many Operator implementations.  It differs from Kubebuilder in that in addition to Golang, you can create Operators using Ansible.
+
+See the [user guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md) to install Operator SDK locally on your machine.  Note the dependencies!  After you have installed the sdk, see [here](./website-operator-sdk/README.md) for instructions on how to implement the Website CRD and custom controller, debug and to deploy to Kubernetes.
 
 ## References ##
 
