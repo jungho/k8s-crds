@@ -27,12 +27,17 @@ import (
 type WebsiteSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	GitRepo    string `json:"gitRepo"`
+	Replicas   int32  `json:"replicas"`
+	Port       int32  `json:"port"`
+	TargetPort int32  `json:"targetPort"`
 }
 
 // WebsiteStatus defines the observed state of Website
 type WebsiteStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	Replicas int32 `json:"replicas"`
 }
 
 // +genclient
