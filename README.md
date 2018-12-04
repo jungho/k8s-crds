@@ -17,6 +17,8 @@ Kubernetes provides a rich set of API primitives to specify the desired state of
 
 Anyone that understands Prometheus, would understand these resource.  Instead of thinking in terms of Deployments, Statefulsets, Services etc, you can now think in concepts you are familiar with.  This is the value of Custom Resource Definitions.  Of course, the Kubernetes API primitives are still there. To deploy Prometheus, Alertmanager, Exporters, Grafana etc, the Prometheus Operator deploys Deployments, StatefulSets, Services and of course, Pods, to bring up the components in a resilient manner.  This is done through an implementation of a custom controller that consumes the CRDs and creates the Kubernetes resources to deploy and configure the components.  
 
+To deploy the Prometheus Operator, follow the instructions [here](./prometheus/README.md)
+
 ## Marko Lukša Website Example ##
 
 To demonstrate the process of creating a CRD, let's first deploy [Marko Lukša's](https://github.com/luksa) example.
