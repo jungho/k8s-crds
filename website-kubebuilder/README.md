@@ -119,16 +119,22 @@ Kubebuilder generates a test suite to test our Reconciler logic.  This is one of
 
 Execute the tests by running `make test`.  Once the tests pass, you can then build and push the image for your controller image to your registry.
 
+### Running the Controller locally
+
+1. Make the test pass
+2. make install
+3. make run
+
 ### Build and Push your Controller image
 
 1. `export IMG=architechbootcamp/website-kubebuilder-controller:1.0.0` so that make builds, tags and push the image with the correct image URL. 
-2. run `make docker-build` to build the image.  If you look at the docker-build rule, you will see it looks for the IMG variable.
-3. run `make docker-push` to push the image to your registry.
-4. run `make deploy` to deploy to Kubernetes
+2. `make docker-build` to build the image.  If you look at the docker-build rule, you will see it looks for the IMG variable.
+3. `make docker-push` to push the image to your registry.
+4. `make deploy` to deploy to Kubernetes
 
-If you want to execute and debug the controller locally:
+### Debugging the Controller
 
-1. run `make deploy`
+1. Run the controller locally
 
 
 
