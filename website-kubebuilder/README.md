@@ -109,4 +109,29 @@ func (r *ReconcileWebsite) Reconcile(request reconcile.Request) (reconcile.Resul
 
 The Reconcile function is part of the [Reconciler](https://github.com/jungho/k8s-crds/blob/master/website-kubebuilder/vendor/sigs.k8s.io/controller-runtime/pkg/reconcile/reconcile.go#L79:6) interface. The generated [ReconcileWebsite struct](https://github.com/jungho/k8s-crds/blob/master/website-kubebuilder/pkg/controller/website/website_controller.go#L87:6) satisfies this interface.  It is responsible for implementing the reconciliation logic and will be invoked for each ADD, UPDATE, DELETE event for our Website resource.  See the [Controller Runtime Client API](https://github.com/operator-framework/operator-sdk/blob/master/doc/user/client.md) for the key interfaces.
 
-## Build and Deploy the operator
+## Building, Testing, Deploying your Custom Controller
+
+Kubebuilder provides a Makefile to build, test, deploy your controller.  If you look at the [Makefile](./Makefile), you will see that the rule `deploy` requires [kustomize](https://github.com/kubernetes-sigs/kustomize).  Kustomize is sort of like sed in that it processes input files, transforms it and writes it to stdout. Install it and put it in your path.  I have my $GOPATH/bin directory on my PATH, so i just install it by running `go get github.com/kubernetes-sigs/kustomize`
+
+### Make the test pass 
+
+Kubebuilder generates a test suite to test our Reconciler logic.  This is one of the nicest things about Kubebuilder and definitely a plus over Operator SDK. The test is defined in [./pkg/controller/website/website_controller_test.go](./pkg/controller/website/website_controller_test.go).  We need to provide our implementation in the [TestReconcile](https://github.com/jungho/k8s-crds/blob/master/website-kubebuilder/pkg/controller/website/website_controller_test.go#L42:6) function.  The generated tests uses the [Gomega](http://onsi.github.io/gomega/) assertion libary and Golang's [testing](https://golang.org/pkg/testing/) package.
+
+Execute the tests by running `make test`.  Once the tests pass, you can then build and push the image for your controller image to your registry.
+
+### Build and Push your Controller image
+
+1. `export IMG=architechbootcamp/website-kubebuilder-controller:1.0.0` so that make builds, tags and push the image with the correct image URL. 
+2. run `make docker-build` to build the image.  If you look at the docker-build rule, you will see it looks for the IMG variable.
+3. run `make docker-push` to push the image to your registry.
+4. run `make deploy` to deploy to Kubernetes
+
+If you want to execute and debug the controller locally:
+
+1. run `make deploy`
+
+
+
+
+
+
