@@ -21,8 +21,31 @@ spec:
         metadata:
           type: object
         spec:
+          properties:
+            gitRepo:
+              type: string
+            port:
+              format: int32
+              type: integer
+            replicas:
+              format: int32
+              type: integer
+            targetPort:
+              format: int32
+              type: integer
+          required:
+          - gitRepo
+          - replicas
+          - port
+          - targetPort
           type: object
         status:
+          properties:
+            replicas:
+              format: int32
+              type: integer
+          required:
+          - replicas
           type: object
   version: v1beta1
 status:
