@@ -334,6 +334,11 @@ func (r *ReconcileWebsite) newDeploymentForWebsite(ws *examplev1beta1.Website, l
 		},
 	}
 
+	// SetControllerReference sets owner as a Controller OwnerReference on owned.
+	// This is used for garbage collection of the owned object and for
+	// reconciling the owner object on changes to owned (with a Watch + EnqueueRequestForOwner).
+	// Since only one OwnerReference can be a controller, it returns an error if
+	// there is another OwnerReference with Controller flag set.
 	if err := controllerutil.SetControllerReference(ws, deployment, r.scheme); err != nil {
 		return nil, err
 	}
@@ -378,6 +383,11 @@ func (r *ReconcileWebsite) newServiceForWebsite(ws *examplev1beta1.Website, labe
 		},
 	}
 
+	// SetControllerReference sets owner as a Controller OwnerReference on owned.
+	// This is used for garbage collection of the owned object and for
+	// reconciling the owner object on changes to owned (with a Watch + EnqueueRequestForOwner).
+	// Since only one OwnerReference can be a controller, it returns an error if
+	// there is another OwnerReference with Controller flag set.
 	if err := controllerutil.SetControllerReference(ws, service, r.scheme); err != nil {
 		return nil, err
 	}
