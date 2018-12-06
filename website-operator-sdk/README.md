@@ -90,7 +90,22 @@ The sdk will generate the code for your controller in the pkg/controller directo
 ```
 ## Modifying the generated code to add our reconciliation logic 
 
-First we modify [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/website_types.go). This file contains the generated golang struct types for your Website resource. The SDK generates a skeleton, you need to take it the rest of the way.  For our purposes, we want the GitRepo and Replicas fields added the spec and Replicas to the status.
+First, we modify [deploy/crds/example_v1beta1_website_cr.yaml](./deploy/crds/example_v1beta1_website_cr.yaml) support our semantics.  
+
+```yaml
+apiVersion: example.architech.ca/v1beta1
+kind: Website
+metadata:
+  name: example-website
+spec:
+  # Add fields here
+  gitRepo: https://github.com/luksa/kubia-website-example.git
+  replicas: 2     #The desired number of replicas of our Website
+  port: 8080      #The port for the service
+  targetPort: 80  #The container target port
+```
+
+Second, we modify [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/website_types.go). This file contains the generated golang struct types for your Website resource. The SDK generates a skeleton, you need to take it the rest of the way.  
 
 ```go
 type WebsiteSpec struct {
