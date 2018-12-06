@@ -132,7 +132,7 @@ The Reconcile function is part of the [Reconciler](https://github.com/jungho/k8s
 
 ## Building, Testing, Deploying your Custom Controller
 
-Kubebuilder provides a Makefile to build, test, deploy your controller.  If you look at the [Makefile](./Makefile), you will see that the rule `deploy` requires [kustomize](https://github.com/kubernetes-sigs/kustomize).  Kustomize is sort of like sed in that it processes input files, transforms it and writes it to stdout. Install it and put it in your path.  I have my $GOPATH/bin directory on my PATH, so i just install it by running `go get github.com/kubernetes-sigs/kustomize`
+Start up your Kubernetes cluster.  I use [minikube](https://github.com/kubernetes/minikube) to develop and test custom controllers locally.  I used [v0.30.0](https://github.com/kubernetes/minikube/releases/tag/v0.30.0) which supports v1.10.0 of Kubernetes.  
 
 ### Make the test pass 
 
@@ -143,8 +143,7 @@ Execute the tests by running `make test`.  Once the tests pass, you can then bui
 ### Running the Controller locally
 
 ```bash
-make test 
-make install 
+make install #This will install the CRD on the cluster
 make run #this will start up the controller locally and output logs to the terminal
 
 kubectl create -f config/samples
