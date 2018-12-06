@@ -142,6 +142,8 @@ Execute the tests by running `make test`.  Once the tests pass, you can then bui
 
 ### Running the Controller locally
 
+Open up a terminal and run the following commands from within the root of your Kubebuilder project.
+
 ```bash
 make install #This will install the CRD on the cluster
 make run #this will start up the controller locally and output logs to the terminal
