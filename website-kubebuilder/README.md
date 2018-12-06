@@ -117,7 +117,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error
 This is the method that makes the Manager aware of your controller and is also where you specify which resources
 your controller "watches" for changes.  We want to watch for Website, Deployment and Service resources.  Note, we don't
 care about all Deployment and Service resources, only those "owned" by Website resources.  
-See [pkg/controller/website/website_controller.go](./pkg/controller/website/website_controller.go).
+See [pkg/controller/website/website_controller.go](https://github.com/jungho/k8s-crds/blob/master/website-kubebuilder/pkg/controller/website/website_controller.go#L61:6).
 
 ```go
 // Reconcile reads the state of the cluster for a Website object and makes changes based on the state read
