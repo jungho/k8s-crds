@@ -1,7 +1,8 @@
 ## Creating a Kubebuilder Project
 
-The benefit of Kubebuilder is that it generates lot of the scaffolding to make creating CRDs and custom controllers much, much easier.  
-Kubebuilder also provides a Makefile to build, test, deploy your controller.  If you look at the [Makefile](./Makefile), you will see that the rule `deploy` requires [kustomize](https://github.com/kubernetes-sigs/kustomize).  Kustomize is sort of like sed in that it processes input files, transforms it and writes it to stdout. Install it and put it in your path.  I have my $GOPATH/bin directory on my PATH, so i just install it by running `go get github.com/kubernetes-sigs/kustomize`
+The benefit of Kubebuilder is that it generates lot of the scaffolding to make creating CRDs and custom controllers much, much easier.  Kubebuilder also provides a Makefile to build, test, deploy your controller.  
+
+If you look at the [Makefile](./Makefile), you will see that the rule `deploy` requires [kustomize](https://github.com/kubernetes-sigs/kustomize).  Kustomize is sort of like sed in that it processes input files, transforms it and writes it to stdout. Install it and put it in your path.  I have my $GOPATH/bin directory on my PATH, so i just install it by running `go get github.com/kubernetes-sigs/kustomize`
 
 To create a new Kubebuilder project run the following command somewhere within your GOPATH:
 
