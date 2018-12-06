@@ -99,10 +99,11 @@ metadata:
   name: website-sample
 spec:
   # Add fields here
-  gitRepo: https://github.com/luksa/kubia-website-example.git
+  gitRepo: https://github.com/jungho/kubebuilder-site.git
   replicas: 2
   port: 8080
   targetPort: 80
+
 ```
 
 Next, you need to implement the reconciliation logic by updating [pkg/controller/website/website_controller.go](./pkg/controller/website/website_controller.go).
@@ -149,6 +150,21 @@ make install #This will install the CRD on the cluster
 make run #this will start up the controller locally and output logs to the terminal
 
 kubectl create -f config/samples
+
+#Get the IP of website-sample-service in Minikube and access the IP with your browser
+mk service list
+
+[~/go/src/github.com/jungho/k8s-crds/website-kubebuilder, master+5]: mk service list  
+|----------------------------|------------------------------------------------|-----------------------------|
+|         NAMESPACE          |                      NAME                      |             URL             |
+|----------------------------|------------------------------------------------|-----------------------------|
+| default                    | kubernetes                                     | No node port                |
+| default                    | website-sample-service                         | http://192.168.99.100:32723 |
+| kube-system                | kube-dns                                       | No node port                |
+| kube-system                | kubernetes-dashboard                           | No node port                |
+| website-kubebuilder-system | website-kubebuilder-controller-manager-service | No node port                |
+|----------------------------|------------------------------------------------|-----------------------------|
+
 ```
 ### Build and Push your Controller image
 ```bash
