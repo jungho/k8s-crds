@@ -30,7 +30,7 @@ Kubebuilder will generate the following directories as well as deployment yaml f
 ├── PROJECT
 ├── bin         #the build output for your Controller
 ├── cmd         #The Go code to start the Manager that starts your Controller
-├── config      #containers the deployment yaml files, CRD and sample instance, RBAC role, rolebindings
+├── config      #contains the deployment yaml files, CRD and sample instance, RBAC role, rolebindings
 ├── cover.out
 ├── hack
 ├── pkg         #Contains the Go code for your API, Controller and Reconciler
@@ -61,7 +61,7 @@ Let's take a deeper look into the `pkg` directory.
 │   ├── controller.go
 │   └── website
 │       ├── website_controller.go #You will modify this code to add your reconciliation logic.
-│       ├── website_controller_suite_test.go #You will modify this to test you reconciliation logic.
+│       ├── website_controller_suite_test.go #You will modify this to test your reconciliation logic.
 │       └── website_controller_test.go
 └── webhook
     └── webhook.go
