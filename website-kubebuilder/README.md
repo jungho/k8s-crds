@@ -1,6 +1,9 @@
 ## Creating a Kubebuilder Project
 
-The benefit of Kubebuilder is that it generates lot of the scaffolding to make creating CRDs and custom controllers much, much easier.  To create a new Kubebuilder project run the following command somewhere within your GOPATH:
+The benefit of Kubebuilder is that it generates lot of the scaffolding to make creating CRDs and custom controllers much, much easier.  
+Kubebuilder also provides a Makefile to build, test, deploy your controller.  If you look at the [Makefile](./Makefile), you will see that the rule `deploy` requires [kustomize](https://github.com/kubernetes-sigs/kustomize).  Kustomize is sort of like sed in that it processes input files, transforms it and writes it to stdout. Install it and put it in your path.  I have my $GOPATH/bin directory on my PATH, so i just install it by running `go get github.com/kubernetes-sigs/kustomize`
+
+To create a new Kubebuilder project run the following command somewhere within your GOPATH:
 
 ```sh
 #my GOPATH is ~/go
@@ -57,7 +60,7 @@ Let's take a deeper look into the `pkg` directory.
 │   ├── controller.go
 │   └── website
 │       ├── website_controller.go #You will modify this code to add your reconciliation logic.
-│       ├── website_controller_suite_test.go
+│       ├── website_controller_suite_test.go #You will modify this to test you reconciliation logic.
 │       └── website_controller_test.go
 └── webhook
     └── webhook.go
@@ -83,6 +86,23 @@ type WebsiteSpec struct {
 
 Note, as per the comments, whenever you makes changes to this file, you need to run `make` to update other sdk generated files such as 
 [pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/zz_generated.deepcopy.go).
+
+Next, update the CRD instance in [config/samples/example_v1beta1_website.yaml](./config/samples/example_v1beta1_website.yaml) to look like so:
+
+```yaml
+apiVersion: example.architech.ca/v1beta1
+kind: Website
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: website-sample
+spec:
+  # Add fields here
+  gitRepo: https://github.com/luksa/kubia-website-example.git
+  replicas: 2
+  port: 8080
+  targetPort: 80
+```
 
 Next, you need to implement the reconciliation logic by updating [pkg/controller/website/website_controller.go](./pkg/controller/website/website_controller.go).
 
@@ -121,20 +141,48 @@ Execute the tests by running `make test`.  Once the tests pass, you can then bui
 
 ### Running the Controller locally
 
-1. Make the test pass
-2. make install
-3. make run
+```bash
+make test 
+make install 
+make run #this will start up the controller locally and output logs to the terminal
 
+kubectl create -f config/samples
+```
 ### Build and Push your Controller image
+```bash
+export IMG=architechbootcamp/website-kubebuilder-controller:1.0.0 
 
-1. `export IMG=architechbootcamp/website-kubebuilder-controller:1.0.0` so that make builds, tags and push the image with the correct image URL. 
-2. `make docker-build` to build the image.  If you look at the docker-build rule, you will see it looks for the IMG variable.
-3. `make docker-push` to push the image to your registry.
-4. `make deploy` to deploy to Kubernetes
+#docker-build rule expects $IMG to be defined
+make docker-build
+make docker-push
+make deploy  #deploys the CRD and Controller to the cluster specified in ~/.kube/config
+
+kubectl create -f config/samples
+```
 
 ### Debugging the Controller
 
-1. Run the controller locally
+```bash
+make install 
+#Configure IDE debugger to launch `cmd/manager/main.go` and set breakpoint.
+
+kubectl create -f config/samples
+```
+
+### To Undeploy everything
+
+I added the following rule to the Makefile
+
+```makefile
+#Uninstall the controller and CRDs
+undeploy: manifests
+    kustomize build/config/default | kubectl delete -f -
+    kubectl delete -f config/crds
+```
+
+ 
+
+
 
 
 

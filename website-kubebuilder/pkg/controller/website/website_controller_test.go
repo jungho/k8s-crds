@@ -35,7 +35,7 @@ import (
 var c client.Client
 
 var expectedRequest = reconcile.Request{NamespacedName: types.NamespacedName{Name: "foo", Namespace: "default"}}
-var depKey = types.NamespacedName{Name: "foo-deployment", Namespace: "default"}
+var depKey = types.NamespacedName{Name: "foo", Namespace: "default"}
 
 const timeout = time.Second * 5
 

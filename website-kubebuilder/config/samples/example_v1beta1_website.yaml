@@ -6,4 +6,7 @@ metadata:
   name: website-sample
 spec:
   # Add fields here
-  foo: bar
+  gitRepo: https://github.com/luksa/kubia-website-example.git
+  replicas: 2
+  port: 8080
+  targetPort: 80

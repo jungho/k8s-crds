@@ -1,5 +1,6 @@
 
 # Image URL to use all building/pushing image targets
+# If you change this Makefile make sure to use tabs NOT SPACES before the actions!
 IMG ?= controller:latest
 
 all: test manager
@@ -16,14 +17,24 @@ manager: generate fmt vet
 run: generate fmt vet
 	go run ./cmd/manager/main.go
 
-# Install CRDs into a cluster
+# Install CRDs into a cluster and CRD instance
 install: manifests
 	kubectl apply -f config/crds
+
+# Delete CRDs and CRD instance
+uninstall: manifests
+	kubectl delete -f config/samples
+	kubectl delete -f config/crds
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: manifests
 	kubectl apply -f config/crds
 	kustomize build config/default | kubectl apply -f -
+
+#Uninstall the controller and CRDs
+undeploy: manifests
+	kustomize build/config/default | kubectl delete -f -
+	kubectl delete -f config/crds
 
 # Generate manifests e.g. CRD, RBAC etc.
 manifests:
