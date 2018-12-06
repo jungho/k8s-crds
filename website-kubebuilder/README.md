@@ -171,16 +171,6 @@ make install
 kubectl create -f config/samples
 ```
 
-### To Undeploy everything
-
-I added the following rule to the Makefile
-
-```makefile
-#Uninstall the controller and CRDs
-undeploy: manifests
-    kustomize build/config/default | kubectl delete -f -
-    kubectl delete -f config/crds
-```
 
  
 
