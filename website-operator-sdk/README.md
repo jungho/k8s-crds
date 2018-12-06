@@ -154,6 +154,8 @@ The Reconcile function is part of the [Reconciler](https://github.com/jungho/k8s
 
 ## Build and Deploy the operator
 
+Start up your Kubernetes cluster.  I use [minikube](https://github.com/kubernetes/minikube) to develop and test custom controllers locally.  I used [v0.30.0](https://github.com/kubernetes/minikube/releases/tag/v0.30.0) which supports v1.10.0 of Kubernetes.  
+
 You can build and deploy your operator to a cluster or run the operator locally.  I have created a shell script to do this.
 
 1. Update the container image in [deploy/operator.yaml](./deploy/operator.yaml) to be your controller image.
@@ -162,6 +164,16 @@ You can build and deploy your operator to a cluster or run the operator locally.
 
 To deploy to the cluster just run `./deploy-operator.sh` without any flags.
 To run the operator locally, run `./deploy-operator.sh -l` 
+
+## Create an instance of your Website
+
+```bash
+kubectl create -f deploy/crds/example_v1beta1_website_cr.yaml
+
+#Find out the IP to access the example-website-service on minikube
+minikube service list
+
+```
 
 ## Debugging the Operator
 
