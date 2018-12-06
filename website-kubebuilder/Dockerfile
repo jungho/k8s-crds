@@ -11,7 +11,9 @@ COPY vendor/ vendor/
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager github.com/jungho/k8s-crds/website-kubebuilder/cmd/manager
 
 # Copy the controller-manager into a thin image
-FROM ubuntu:latest
+FROM scratch
+#required for TLS
+ADD ca-certificates.crt /etc/ssl/certs/
 WORKDIR /root/
 COPY --from=builder /go/src/github.com/jungho/k8s-crds/website-kubebuilder/manager .
 ENTRYPOINT ["./manager"]
