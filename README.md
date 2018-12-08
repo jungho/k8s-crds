@@ -110,9 +110,10 @@ See the [user guide](https://github.com/operator-framework/operator-sdk/blob/mas
 
 ## References ##
 
-- [Kuberenetes Deep Dive Series by RedHat.  Excellent overview of the kube-apiserver, code generation for CRDs, and how state is stored in etcd](https://blog.openshift.com/kubernetes-deep-dive-api-server-part-1/)
-- [Writing Kubernetes Custom Controllers. Describes how to implement custom controllers using client-go.  Read this prior to diving into the sample-controller as it describes an established pattern for implementing controllers.](https://medium.com/@cloudark/kubernetes-custom-controllers-b6c7d0668fdf)
-- [sample-controller.  Example implementing a customer controller using client-go library.](https://github.com/kubernetes/sample-controller)
+- [Kuberenetes Deep Dive Series by RedHat.  Excellent overview of the kube-apiserver and how state is stored in etcd](https://blog.openshift.com/kubernetes-deep-dive-api-server-part-1/)
+- [Kubernetes Code Generation Deep Dive by RedHat](https://blog.openshift.com/kubernetes-deep-dive-code-generation-customresources/)
+- [Writing Kubernetes Custom Controllers.](https://medium.com/@cloudark/kubernetes-custom-controllers-b6c7d0668fdf)Describes how to implement custom controllers using client-go.  Read this prior to diving into the sample-controller as it describes an established pattern for implementing controllers.
+- [sample-controller.](https://github.com/kubernetes/sample-controller) Example implementing a customer controller using client-go library.
 - [controller-runtime library docs.](https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg) Both Kubebuilder and Operator SDK depends on this library.  It primarily provides the lower-level types and functions to integrate with the api server, watch for events, provide a internal work queue to decouple the Informer from the Reconciler and more.
 - [Kubebuilder docs](https://book.kubebuilder.io/)
 - [Operator SDK docs](https://github.com/operator-framework/operator-sdk)
