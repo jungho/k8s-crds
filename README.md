@@ -110,7 +110,7 @@ See the [user guide](https://github.com/operator-framework/operator-sdk/blob/mas
 
 ## References ##
 
-- [Kuberenetes Deep Dive Series by RedHat.  Excellent overview of the kube-apiserver and how state is stored in etcd](https://blog.openshift.com/kubernetes-deep-dive-api-server-part-1/)
+- [Kuberenetes Deep Dive Series by RedHat.](https://blog.openshift.com/kubernetes-deep-dive-api-server-part-1/) Excellent overview of the kube-apiserver and how state is stored in etcd.
 - [Kubernetes Code Generation Deep Dive by RedHat](https://blog.openshift.com/kubernetes-deep-dive-code-generation-customresources/)
 - [Writing Kubernetes Custom Controllers.](https://medium.com/@cloudark/kubernetes-custom-controllers-b6c7d0668fdf)Describes how to implement custom controllers using client-go.  Read this prior to diving into the sample-controller as it describes an established pattern for implementing controllers.
 - [sample-controller.](https://github.com/kubernetes/sample-controller) Example implementing a customer controller using client-go library.
