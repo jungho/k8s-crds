@@ -168,13 +168,15 @@ mk service list
 ```
 ### Build and Push your Controller image
 ```bash
+#The image to build/tag/push
 export IMG=architechbootcamp/website-kubebuilder-controller:1.0.0 
 
-#docker-build rule expects $IMG to be defined
+#docker-build/docker-push rule expects $IMG to be defined
 make docker-build
 make docker-push
 make deploy  #deploys the CRD and Controller to the cluster specified in ~/.kube/config
 
+#create an instance of our CRD
 kubectl create -f config/samples
 ```
 
