@@ -30,7 +30,7 @@ Kubebuilder will generate the following directories as well as deployment yaml f
 ├── PROJECT
 ├── bin         #the build output for your Controller
 ├── cmd         #The Go code to start the Manager that starts your Controller
-├── config      #containers the deployment yaml files, CRD and sample instance, RBAC role, rolebindings
+├── config      #contains the deployment yaml files, CRD and sample instance, RBAC role, rolebindings
 ├── cover.out
 ├── hack
 ├── pkg         #Contains the Go code for your API, Controller and Reconciler
@@ -61,7 +61,7 @@ Let's take a deeper look into the `pkg` directory.
 │   ├── controller.go
 │   └── website
 │       ├── website_controller.go #You will modify this code to add your reconciliation logic.
-│       ├── website_controller_suite_test.go #You will modify this to test you reconciliation logic.
+│       ├── website_controller_suite_test.go #You will modify this to test your reconciliation logic.
 │       └── website_controller_test.go
 └── webhook
     └── webhook.go
@@ -117,7 +117,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error
 This is the method that makes the Manager aware of your controller and is also where you specify which resources
 your controller "watches" for changes.  We want to watch for Website, Deployment and Service resources.  Note, we don't
 care about all Deployment and Service resources, only those "owned" by Website resources.  
-See [pkg/controller/website/website_controller.go](./pkg/controller/website/website_controller.go).
+See [pkg/controller/website/website_controller.go](https://github.com/jungho/k8s-crds/blob/master/website-kubebuilder/pkg/controller/website/website_controller.go#L61:6).
 
 ```go
 // Reconcile reads the state of the cluster for a Website object and makes changes based on the state read
@@ -168,13 +168,15 @@ mk service list
 ```
 ### Build and Push your Controller image
 ```bash
+#The image to build/tag/push
 export IMG=architechbootcamp/website-kubebuilder-controller:1.0.0 
 
-#docker-build rule expects $IMG to be defined
+#docker-build/docker-push rule expects $IMG to be defined
 make docker-build
 make docker-push
 make deploy  #deploys the CRD and Controller to the cluster specified in ~/.kube/config
 
+#create an instance of our CRD
 kubectl create -f config/samples
 ```
 
