@@ -1,7 +1,8 @@
 ## Deploying the Prometheus Operator
 
 1. Install Helm.  See See https://docs.helm.sh/using_helm/#installing-helm for your OS.
-2. Init Helm from your cluster.  `helm init --upgrade`
+2. Install the necessary role/role-bindings for Tiller.  Note this is only required for AKS
+2. Init Helm from your AKS cluster.  `helm init --upgrade --serviceaccount tiller`.  If using Minikube do `helm init --upgrade`
 3. Run the `deploy-operator.sh` script.  Note, the script will deploy the operator to the `monitoring` namespace.
 4. Now look at what was deployed
 
