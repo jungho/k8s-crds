@@ -10,6 +10,8 @@ spec:
   names:
     kind: Website
     plural: websites
+    singular: websites
+    shortNames: ['ws']
   scope: Namespaced
   validation:
     openAPIV3Schema:
