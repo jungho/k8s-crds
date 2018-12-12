@@ -7,6 +7,14 @@
 4. Now look at what was deployed
 
 ```bash
+
+#What did helm deploy?
+[~/go/src/github.com/jungho/k8s-crds/prometheus, master]: helm ls
+NAME                    REVISION        UPDATED                         STATUS          CHART  
+kube-prometheus         1               Wed Dec 12 12:56:07 2018        DEPLOYED        kube-prometheus-0.0.105
+prometheus-operator     1               Wed Dec 12 12:54:52 2018        DEPLOYED        prometheus-operator-0.0.29
+
+
 #What CRDs were deployed?
 [~/go/src/github.com/jungho/k8s-crds, master, 3s]: kubectl get crds                                                                    
 NAME                                    CREATED AT
@@ -47,4 +55,4 @@ alertmanager-kube-prometheus   1         1         54m
 prometheus-kube-prometheus     1         1         54m
 ```
 
-To tear everything down, run `kubectl delete namespace monitoring`
+To tear everything down, run `helm delete prometheus-operator && helm delete kube-prometheus && kubectl delete namespace monitoring`
