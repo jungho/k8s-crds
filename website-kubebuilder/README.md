@@ -86,7 +86,7 @@ type WebsiteSpec struct {
 ```
 
 Note, as per the comments, whenever you makes changes to this file, you need to run `make` to update other sdk generated files such as 
-[pkg/apis/example/v1beta1/website_types.go](./pkg/apis/example/v1beta1/zz_generated.deepcopy.go).
+[pkg/apis/example/v1beta1/zz_generated.deepcopy.go](./pkg/apis/example/v1beta1/zz_generated.deepcopy.go).
 
 Next, update the CRD instance in [config/samples/example_v1beta1_website.yaml](./config/samples/example_v1beta1_website.yaml) to look like so:
 
