@@ -10,7 +10,7 @@ spec:
   names:
     kind: Website
     plural: websites
-    singular: websites
+    singular: website
     shortNames: ['ws']
   scope: Namespaced
   validation:
