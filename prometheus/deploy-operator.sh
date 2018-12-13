@@ -15,4 +15,4 @@ helm install coreos/prometheus-operator --name prometheus-operator --namespace m
 helm install coreos/kube-prometheus --name kube-prometheus --set global.rbacEnable=true --namespace monitoring
 
 #5. Create a Service to access the Grafana dashboard
-kubectl create -f dashboard-service.yaml
+kubectl create -f dashboard-service.yaml -n monitoring

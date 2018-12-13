@@ -4,7 +4,9 @@ Kubernetes is a highly extensible platform.  It supports many [extension points]
 
 **Note, this is an EXCELLENT book on Kubernetes and I highly recommend you read it!**
 
-We will first dive into Marko's example as it is simple and clear.  However, his implementation is intentionally very simple and as he notes "barely working".  So we will re-implement his example using Kubebuilder and Operator SDK which enable you to build production grade CRDs and Controllers quickly.  
+We will first dive into Marko's example as it is simple and clear.  However, his implementation is intentionally very simple and as he notes "barely working".  So we will re-implement his example using Kubebuilder and Operator SDK which enable you to build production grade CRDs and Controllers quickly. 
+
+**Note, this is pretty advanced material so if new to Kubernetes, you should start with my [Bootcamp](https://github.com/jungho/k8s-bootcamp)**
 
 ## What and Why?
 

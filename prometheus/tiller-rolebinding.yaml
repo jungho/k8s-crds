@@ -1,0 +1,22 @@
+#here we create a serviceaccount specifically for the Tiller pod, we
+#then bind the tiller serviceaccount to the cluster-admin role, giving
+#tiller the necessary access to the api-server.  Note, the access
+#in this case is still too broad, but for our purposes, it is sufficient.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tiller
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: tiller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: tiller
+    namespace: kube-system
