@@ -184,7 +184,8 @@ kubectl create -f config/samples
 
 ```bash
 make install 
-#Configure IDE debugger to launch `cmd/manager/main.go` and set breakpoint.
+
+#Configure IDE debugger to launch `cmd/manager/main.go`, set breakpoint and start up the controller.
 
 kubectl create -f config/samples
 ```
